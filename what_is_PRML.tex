@@ -1,0 +1,82 @@
+%        File: what_is_PRML.tex
+%     Created: 周四 三月 01 09:00 上午 2012 中国标准时间
+% Last Change: 周四 三月 01 09:00 上午 2012 中国标准时间
+%
+\documentclass[11pt,a4paper]{article}
+\usepackage{CJK,amsmath,graphicx}
+\title{PRML}
+\author{@seaslee}
+\begin{document}
+\maketitle
+\begin{CJK*}{GBK}{song}
+
+ \section{机器学习和模式识别的概念}
+机器学习是设计和分析使机器“学习”的算法，能从数据集中发现规律，并根据规律对未知数据做预测。机器学习是人工智能的分支。著名的机器学习大师 Tom Mitchell 对机器学习经典的定义，`` A computer program is said to learn from experience E with respect to some class of
+tasks T and performace measure P ,if its performance in the task T,measured by P,improves with experience E.''
+简单来说，模式识别就是给输入值加标签（分类）。当然更广义的来说，不止加标签这么局限，可以给输入值一个对应的输出值（回归），
+甚至可以是标签序列（语音标注）。
+
+举例:一个经典的例子就是“手写字符识别“。我们设计一个learner,从一个巨大的手写字符图片库中进行学习，当有新的手写字符图片时，我们
+希望我们的learner能够做出正确的判断。
+
+\section{两类主要问题}
+在这里我们主要关注的是分类和回归问题。所谓分类问题，输出是离散的；而回归问题的输出则是连续的。对于很多现实问题我们都可以转化为这两类问题。比如：在很多的Email系统中都可以判断一封邮件是否是垃圾邮件，这里涉及到的就是一种分类问题，二类问题。如果我们希望根据以前的二手房成交数据来预测未来的交易价格，则是一个回归问题，我们希望得到的一个具体的价格。
+
+
+\section{机器学习和模式识别的过程}
+学习过程中涉及到的数据名词：input vector, target vector, training set, test set.
+
+input vector:  $x^i=(x_1,x_2,\dots,x_m);$
+target vector: $y^i=(y_1,y_2,\dots.y_k);$
+
+traing set:    $X=(x^1,x^2,\dots,x^n);$
+test set:      $Y=(y^1,y^2,\dots,y^t);$
+
+在上面的表示中，$x^i,y^i$分别表示实例的输入和输出；而$x_i$则表示输入的特征。m表示输入变量的特征空间；k表示是一个多标签问题，k代表着标签的数目；n则是training set的数目。t则表示test set的实例数目。
+
+在ML应用中，第一个阶段通常是特征提取。输入变量通常经过特征提取过程转换到一个新的变量空间中去。这不仅有性能的考虑，也有计算量的考虑。
+
+进行特征提取后，我们就要设计算法，实现一个学习器以满足不同的任务。通常，要根据实际应用，看是那类问题，从而选择不同的算法类型。
+
+\section{机器学习和模式识别常用的算法类型}
+根据算法的输出不同，我们通常可以做一下的分类：
+
+1.监督学习。
+在监督学习中，训练集合(training set)中的实例是输入值和期望的输出值（通常是人们手工标注的标签或其他值）的二元组。在监督学习中，有训练集合得到一个分类器（分类问题）和回归函数（回归问题），能够对任何的有效输入值做出预测。
+
+2.非监督学习。
+在非监督学习中，训练集合中的实例是由输入值构成的，没有输出值（标注的标签）。在半监督学习中，学习的目标是发现训练数据的结构特征。通常用到的算法有聚类等。
+
+3.半监督学习。
+在半监督学习中，我们使用有标签数据（即上面所说的二元组形式）和无标签的数据一起来构建分类器。
+
+4.增强式学习。
+在增强式学习中，关注在给出的环境中，采取恰当的措施，以取得最大的回报。它最重要的一个特征就是平衡exploration和exploitation的关系，取得一个最优的解。
+
+5.其他（待补充）
+
+\section{泛化}
+泛化(generation)是指我们的学习器对新的输入的预测能力，如果能很好的处理新输入，则泛化能力好。我们之所以很注重泛化，是因为现实中输入空间是非常大的，我们的训练集只占其中的一小部分。所以在我们考虑实现ML算法的过程中，算法的泛化能力是我们必须考虑的。
+
+\section{机器学习和模式识别的应用}
+数据挖掘、机器视觉、机器人等。应用比较广泛，而且都是在web中的应用也越来越多。
+
+\section{举例：多项式曲线拟合}
+曲线的拟合问题，并不陌生，不管是高中还是大学的课堂中都有接触。在曲线拟合中，我们接触到了一个评价拟合好坏的标准：误差函数(Error Function)。误差函数主要是描述的是训练集中我们的预测值与实际值的差距。常用的误差函数就是平方差的和，如下：
+\begin{equation}
+  \label{least-square-sum}
+  E(w)=\frac{1}{2}\sum_{n=1}^N\{y(x_{n},w)-t_{n}\}^2
+\end{equation}
+求解的过程一般就是对函数求导，得到关于$w$的线性函数，从而可以得到一个解析解$w^*$。
+为了考虑模型的泛化能力，我们需要在测试集上计算E(w)的值。在这里会出现一个问题:over-fitting。解决这个问题，经常使用的方法就是regularization,公式如下。
+\begin{equation}
+  \label{least-square-sum-with-reg}
+  E(w)=\frac{1}{2}\sum_{n=1}^N\{y(x_{n},w)-t_{n}\}^2+\frac{\lambda}{2}\|w\|
+\end{equation}
+正则化的作用就是惩罚系数，可以使参数变得稀疏，可以看看下面表格：
+\vspace{6pt}
+\includegraphics[width=12cm]{lambda.eps}
+\clearpage
+\end{CJK*}
+\end{document}
+
