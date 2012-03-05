@@ -1,0 +1,54 @@
+%        File: what_is_PRML.tex
+%     Created: 周四 三月 01 09:00 上午 2012 中国标准时间
+% Last Change: 周四 三月 01 09:00 上午 2012 中国标准时间
+%
+\documentclass[11pt,a4paper]{article}
+\usepackage{CJK}
+\usepackage{amsmath,graphicx,amsthm,amssymb}
+\theoremstyle{remark}
+\newtheorem{cdefi}{\bf definition}
+\newtheorem{law}{\bf law}
+\title{PRML\,Probability}
+\author{@seaslee}
+\begin{document}
+\maketitle
+\begin{CJK*}{GBK}{song}
+在模式识别领域中，我们遇到的一个很关键的问题就是不确定性。概率论为我们解决这种不确定性提供了一个系统的框架，所以我们有必要系统的研究一下概率方面的相关知识。
+\section{概率}
+概率论就是研究不确定现象的数学。概率是对随机事件发生可能性的度量。对于概率的基础知识我们在大学本科阶段都有学习，这里简单的回顾一下相关的知识
+\begin{cdefi}
+  如果一个函数$p:S\to\mathbb{R}, A\to p(A)$指定给每一个事件空间$S$中的事件$A$一个实数$P(A)$,满足以下三条公理:
+  \[0<=P(A)<=1;
+    \]
+  \[P(S)=1;
+    \]
+  \[P(A\cup B)=P(A)+P(B),if P(A\cap B)=0.
+    \]
+    那么函数$P$叫做概率函数，相应的$P(A)$就是事件$A$的概率。
+\end{cdefi}
+对我们来说，概率有两个非常重要的定理，加法定律和乘法定律。对我们以后的概率分析有非常重要的作用。
+\begin{law}
+  $$p(X)=\sum_Yp(X,Y);$$
+\end{law}
+\begin{law}
+  $$p(X,Y)=p(Y|X)p(X);$$
+\end{law}
+在下面的分析中，必须要好好地运用这两个定理。
+\section{贝叶斯定理}
+\begin{cdefi}
+  \[
+    p(Y|X)=\frac{p(X|Y)p(Y)}{p(X)}
+    \]
+\end{cdefi}
+其中$p(Y|X)$表示在X发生情况下，Y发生的概率，是一个条件概率。
+
+贝叶斯主义者和频率主义者对这个定理有不同的解释，在贝叶斯主义者看来，概率代表的是信任度，贝叶斯定理解释了在一个命题中，在考虑了证据后对信任度的影响；而频率主义者看来，概率代表了事件发生的个数与事件空间总的数目的比值，贝叶斯定理描述了特定事件概率值之间的关系。
+
+在贝叶斯解释中，
+$p(Y)$表示的是先验概率，$Y$初始的信任度;
+$p(Y|X)$表示的是后验概率，考虑了$X$后的信任度;
+$\frac{p(X|Y)p(Y)}{P(X)}$表示$X$对$Y$的支持;
+\clearpage
+\end{CJK*}
+\end{document}
+
