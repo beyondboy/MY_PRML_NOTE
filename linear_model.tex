@@ -1,0 +1,143 @@
+%        File: what_is_PRML.tex
+%     Created: 周四 三月 01 09:00 上午 2012 中国标准时间
+% Last Change: 周四 三月 01 09:00 上午 2012 中国标准时间
+%
+\documentclass[11pt,a4paper]{article}
+\usepackage{CJK}
+\usepackage{amsmath,graphicx,amsthm,amssymb,algorithm,algorithmic}
+\theoremstyle{remark}
+\newtheorem{cdefi}{\bf definition}
+\newtheorem{law}{\bf law}
+\title{PRML\,Linear Regression Model}
+\author{@seaslee}
+\begin{document}
+\maketitle
+\begin{CJK*}{GBK}{song}
+机器学习算法有很多，有的非常复杂。模型的构建，需要概率论，信息论等学科知识的支撑；而模型的求解有需要又需要很多微积分，线性代数方面的数学知识，所以对我们的数学知识要求会比较高。怎么才能有一个比较好的学习过程呢？感觉基于实例的学习，应该是一个不错的过程。所谓基于实例的学习，就是在学习每个模型之前，我们先看一个需要具体解决的问题，这样会让我们能有兴趣来探究模型来解决问题；然后分析模型，讲解模型知识，在这个过程中，我们思考着我们要解决的问题，这样会有一个思维的聚焦，当然应该偏重理论一些。然后我们用我们学习和分析的模型来解决知识。
+\section{问题}
+
+\section{线性回归模型[linear regression models]}
+线性回归模型是一种简单的统计模型，结构简单，在构建系统时可能不太常用，但是对于我们理解后面的一些概念非常重要。
+我们先从单变量的线性回归模型说起。
+\flushleft
+\begin{enumerate}
+  \item 已知含有$N$个观测变量$x$，以及对应的目标变量$y$。第$i$个观测变量即目标变量写为$x^i,y^i$。
+  \item 目标：预测新的$x$的目标值
+  \item我们线性回归的模型假设(hypothesis)为：
+\begin{equation}
+\hat{y}=\theta_{0}+\theta_{1}x
+  \label{univar_lm}
+\end{equation}
+其中，$x$为输入变量，$\hat{y}$为模型输出变量，$\theta_{0},\theta_{1}$为参数。
+  \item评价标准：评价我们模型好坏应该有个标准，直观上这个标准衡量模型输出变量$y^*$与输出变量$y$相差的程度。这时我们的一个基本的假设就是对过去观测很好的模型，对将来的新到的变量也会很好。（在后面我们会看到，这个假设是存在问题的）。在概率一章中我们介绍过的损失函数(loss function）可以作为我们模型的评价标准。损失函数如下：
+\begin{equation}
+\mathbb E=\frac{1}{2N}\sum_{n=1}^{N}\{y^{(n)}-\hat{y}^{(n)}\}^2
+  \label{ls_error}
+\end{equation}
+根据公式的数学意义我们可以看到，$E$值越小，假设越好，所以下面的工作就是来最小化$E$。
+\end{enumerate}
+现在我们对线性模型有了一个比较直观的印象，知道了什么是线性模型，一个模型好坏的评价(即模型里面参数的选择）。下面来看一下多变量的线性回归模型。
+
+\flushleft
+\begin{enumerate}
+  \item 已知含有$N$个观测变量$X$，其中$X$为$D$维变量$，表示为：(x_1,x_2,\dots,x_D)$以及对应的目标变量$y$。第$i$个观测变量即目标变量写为$X^i,y^i$。
+  \item 目标：预测新的$X$的目标值
+  \item我们线性回归的模型假设为：
+    \begin{equation}
+    \hat{y}=\theta_{0}+\theta_{1}x_1+\theta_{2}x_2+\dots+\theta_{D}*x_{D}
+      \label{mulvar_lm}
+    \end{equation}
+其中，$(x_1,x_2,\dots,x_D)$为输入变量，$\hat{y}$为模型输出变量，$\theta_{0},\theta_{1},\dots,\theta_D$为参数。
+这样模型是关于输入$X$和$\theta$的线性函数，我们可以对模型引入“基函数”来对模型增强，是模型仅是相对于参数的线性模型，而不是相对于输入的线性模型，从而使模型增强。模型假设如下：
+\begin{equation}
+\hat{y}=\theta_{0}+\theta_{1}\phi_{1}(X)+\dots+\theta_{M}\phi_{M}(X)
+  \label{mulvar_lbm}
+\end{equation}
+我们可以看到，通过引入“基函数”，参数数目由$D$变成了$M$，基函数的作用就是使输入空间变到了另外一个空间。
+假设用向量表示形式为：
+\begin{equation}
+\hat{y}=\theta^{T}\phi(X)
+  \label{mulvar_lbm_vec}
+\end{equation}
+其中，$\theta=(\theta_0,\theta_1,\dots,\theta_M)$，$\phi=(1,\phi_1,\dots,\phi_M)$。
+\end{enumerate}
+
+在理解“基函数”的作用的过程中，可能会出现问题。这里我们看一下基函数的作用：
+\flushleft
+\begin{enumerate}
+  \item 由前面基函数的定义，它是将整个变量$X$，一个向量转化为一个标量(在wikipedia上的模型与我们这里的模型有些不同)。在实际的模式识别应用中，我们会对原始的数据进行一些预处理或是特征提取，原始的数据可以看做$X$，而处理后的数据看做$\phi(X)$。
+  \item 实际处理问题是，怎么对原始数据进行处理时非常灵活的。基函数的选取对于我们模型的讨论没有影响，所以后面我们将 $\phi(X)=X$来进行讨论。
+\end{enumerate}
+所以我们应该没有必要对这里的定义过于纠结，要关注模型。
+
+\section{Maximum Likelihood}
+根据上面的模型假设，输出变量与模型输出变量关系写成如下等式：
+\begin{equation}
+y=\hat{y}+\epsilon
+  \label{tarvar}
+\end{equation}
+其中，$\epsilon$为噪声值，假设其为高斯噪声，符合高斯分布$\mathcal N(\epsilon|0,\beta)$。那么变量$y$的分布函数为：
+\begin{equation}
+p(y|X,\theta,\beta)=\mathcal N(y|\hat{y},\beta)
+  \label{tar_dis}
+\end{equation}
+已训练集：输入为$\mathbf X=\{X^1,X^2,\dots,X^N\}$,对应的目标值为：$Y=(y^1,y^2,\dots,y^N)$。我们假定$N$个观测变量符合独立同分布(i.i.d.)，则分布如下：
+\begin{equation}
+p(Y|\mathbf X,\theta,\beta)=\prod_{n=1}^N\mathcal N(y^{(n)}|\hat{y}^{(n)},\beta)
+ \label{tar_dis_total}
+\end{equation}
+为了计算方便，取对数，
+\begin{eqnarray}
+  lnp(Y|\mathbf X,\theta,\beta)&=& \sum_{n=1}^Nln\mathcal N(y^{(n)}|\hat{y}^{(n)},\beta) \label{ml_final}\\
+  \nonumber &=& \sum_{n=1}^Nln\mathcal N(y^{(n)}|\theta^{T}\phi(X^{(n)}),\beta)\\
+  \nonumber &=& \frac{N}{2}ln\beta-\frac{N}{2}ln2\pi-\frac{\beta}{2}\sum_{n=1}^{N}\{y^{(n)}-\theta^{T}\phi(X^{(n)})\}^2 
+\end{eqnarray}
+下面要做的就是最优化参数$\beta\theta$使得似然函数，即表达式(9)取最大值，这就是最大似然方法的含义。我们发现第三部分就是与最小平方和误差函数形式是一致的，这也从概率的角度解释了最小平方和误差函数。下面我们看一下怎么最优化似然函数。
+
+\section{导数法求解最大似然函数}
+对表达式[9]就最大值，我们可以采用求导的方法来解决，分别就似然函数相对于参数$\theta,\beta$的偏导数：
+\begin{eqnarray}
+  \frac{\partial}{\partial\theta}ln(p)&=& -\frac{\beta}{2}\sum_{n=1}^{N}\{[y^{(n)}\theta^{T}\phi(X^{(n)})]\phi^T{(X^{(n)}})\} \label{par_theta}\\
+  \frac{\partial}{\beta}ln(p)&=& \frac{N}{2\beta}-\sum_{n=1}^{N}\{y^{(n)}-\theta^{T}\phi(X^{(n)})\}
+  \label{par_beta}
+\end{eqnarray}
+然后让表达式(\ref{par_theta},\ref{par_beta})都为0，就可以得到使(\ref{ml_final})最大的参数$\theta_{ml},\beta_{ml}$。
+在实际求解$\theta_{ml}$的时候可以转化为矩阵，解标准方程求解，具体可以参考[prml page 142]。
+
+\section{stochastic gradient descent}
+梯度下降算法基于：函数在某点$x$处可微，那么函数在$x$处沿着梯度相反的方向下降最快。在机器学习算法中，最小化的目标函数通常
+具有下面的形式：
+\begin{equation}
+  p(\theta)=\sum_{n=1}^{N}p_i(\theta)
+  \label{obj_gen}
+\end{equation}
+梯度下降算法通常完成下面的迭代：
+\begin{equation}
+  \theta = \theta - \eta\bigtriangledown p(\theta) = \theta-\eta\sum_{n=1}^{N}\bigtriangledown p_i(\theta)
+  \label{gradient}
+\end{equation}
+其中，$\eta$称为学习速率。迭代形式(\ref {gradient})可以近似为下面形式： \begin{equation} \theta = \theta-\eta \bigtriangledown p_{i}(\theta)
+  \label{sto_gradient}
+\end{equation}
+下面是伪代码，引用自：[wikispedia, stochastic gradient descent]
+\begin{algorithm}
+\caption{stochastic gradient descent}
+\label{sto_gra}
+\begin{algorithmic}[1] %显示行号
+  \STATE initialize the parameter vectors $\theta,\eta$
+  \REPEAT
+  \STATE Randomly shuffle examples in the training set 
+  \FOR{$i = 1 \to N$} 
+  \STATE $\theta = \theta-\eta \bigtriangledown p_i(\theta)$
+  \ENDFOR
+\UNTIL{convenge to some criterition}
+\end{algorithmic}
+\end{algorithm}
+其中，shuffle是“洗牌”的意思，顾名思义，就是打乱数据集原来数据的顺序。其中比较常用的shuffle algorithm有
+Fisher–Yates shuffle。
+
+
+\clearpage
+\end{CJK*}
+\end{document}
+
